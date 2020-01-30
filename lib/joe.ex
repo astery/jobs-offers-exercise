@@ -23,20 +23,81 @@ defmodule JOE do
   end
 
   defmodule ContinentStat do
-    defstruct [name: nil, total: 0, categories: []]
+    defstruct [name: nil, total: 0, categories: %{}]
   end
 
+  defmodule State do
+    defstruct [category_name_by_prof_id: %{}, continents_stats: %{}]
+  end
+
+  @total_stat_name "TOTAL"
+
   @doc """
-  Updates state via received data
+  Updates state via received data. Currently only calculates stats.
 
   To simplify Professions must be processed before Offers
   """
-  def receive(state, data) do
+  def receive(nil, data), do: receive(%State{}, data)
+
+  def receive(state, %Profession{id: id, category_name: name}) do
+    %{
+      state
+      | category_name_by_prof_id: Map.put(state.category_name_by_prof_id, id, name)
+    }
+  end
+
+  def receive(state, %Offer{profession_id: prof_id, continent: continent}) do
+    category_name = state.category_name_by_prof_id[prof_id]
+    increment_total_and_continent_category_count(state, continent, category_name)
   end
 
   @doc """
-  Return count of job offers per profession category per continent
+  Return count of job offers per profession category per continent.
+
+  Total count across all of job offers is first line of the list
   """
-  def continents_stats(state) do
+  def continents_stats(state, opts \\ [])
+  def continents_stats(nil, _opts), do: []
+  def continents_stats(%{continents_stats: stats} = state, opts) do
+    {total_stat, stats} = Map.pop(stats, @total_stat_name)
+
+    stats_list =
+      case Keyword.get(opts, :continents) do
+        nil ->
+          Map.values(stats)
+        continents_order when is_list(continents_order) ->
+          Enum.map(continents_order, &get_continent_stat(state, &1))
+      end
+
+    [total_stat | stats_list]
+  end
+
+  defp get_continent_stat(state, name) do
+    Map.get(state.continents_stats, name, %ContinentStat{name: name})
+  end
+
+  defp put_continent_stat(state, stat) do
+    %{state | continents_stats: Map.put(state.continents_stats, stat.name, stat)}
+  end
+
+  defp increment_total_and_continent_category_count(state, nil, category_name) do
+    state
+    |> increment_continent_category_count(@total_stat_name, category_name)
+  end
+  defp increment_total_and_continent_category_count(state, continent, category_name) do
+    state
+    |> increment_continent_category_count(continent, category_name)
+    |> increment_continent_category_count(@total_stat_name, category_name)
+  end
+
+  defp increment_continent_category_count(state, continent_name, category_name) do
+    stat = get_continent_stat(state, continent_name)
+    category_count = Map.get(stat.categories, category_name, 0)
+
+    put_continent_stat(state, %{
+      stat |
+      total: stat.total + 1,
+      categories: Map.put(stat.categories, category_name, category_count + 1)
+    })
   end
 end
