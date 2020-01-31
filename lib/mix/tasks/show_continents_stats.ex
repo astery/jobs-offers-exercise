@@ -1,17 +1,14 @@
 defmodule Mix.Tasks.ShowContinentsStats do
   use Mix.Task
 
-  @default_professions_file "technical-test-professions.csv"
-  @default_offers_file "technical-test-jobs.csv"
-
   @shortdoc "Print continent statistic based on jobs.csv and professions.csv files"
   def run(args) do
     {parsed, _} = OptionParser.parse!(args, switches: [
       professions_file: :string,
       offers_file: :string,
     ])
-    professions_file = Keyword.get(parsed, :professions_file, priv_file_path(@default_professions_file))
-    offers_file = Keyword.get(parsed, :offers_file, priv_file_path(@default_offers_file))
+    professions_file = Keyword.get(parsed, :professions_file, JOE.default_professions_file())
+    offers_file = Keyword.get(parsed, :offers_file, JOE.default_offers_file())
 
     [state] =
       professions_file
@@ -52,9 +49,5 @@ defmodule Mix.Tasks.ShowContinentsStats do
 
     TableRex.quick_render!(rows, header)
     |> Mix.shell.info()
-  end
-
-  defp priv_file_path(file_name) do
-    Path.join(:code.priv_dir(:joe), file_name)
   end
 end

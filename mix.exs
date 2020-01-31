@@ -33,7 +33,8 @@ defmodule JOE.MixProject do
       {:jason, "~> 1.1"},
       {:phoenix, "~> 1.4.12"},
       {:phoenix_pubsub, "~> 1.1"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:ecto, "~> 3.3.0"},
     ]
   end
 end

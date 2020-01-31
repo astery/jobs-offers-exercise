@@ -110,6 +110,15 @@ defmodule JOE do
   @doc "Return stat item name associated with total counter"
   def total_stat_name(), do: @total_stat_name
 
+  def default_professions_file(), do: priv_file_path("technical-test-professions.csv")
+  def default_offers_file(), do: priv_file_path("technical-test-jobs.csv")
+
+  def professions_file(:test), do: Path.join([File.cwd!, "test/fixtures/professions.csv"])
+  def professions_file(_), do: default_professions_file()
+
+  def offers_file(:test), do: Path.join([File.cwd!, "test/fixtures/jobs.csv"])
+  def offers_file(_), do: default_offers_file()
+
   @doc """
   List offers in given radius in kilometers
   """
@@ -118,15 +127,27 @@ defmodule JOE do
     radius_in_meters = radius_in_km * 1_000
 
     Enum.flat_map(offers, fn offer ->
-       point = [offer.office_latitude, offer.office_longitude]
-       distance = Geocalc.Calculator.distance_between(center, point)
-       distance_in_km = distance / 1_000
-       cond do
-         distance <= radius_in_meters -> [%{offer | distance: distance_in_km}]
-         true -> []
-       end
+      with [_, _] = point <- to_point(offer),
+        distance = Geocalc.Calculator.distance_between(center, point),
+        distance_in_km = distance / 1_000,
+        true <- distance <= radius_in_meters do
+          [%{offer | distance: distance_in_km}]
+      else
+        _ -> []
+      end
     end)
     |> List.flatten()
+  end
+
+  defp to_point(%Offer{office_latitude: lat, office_longitude: lon}) when is_binary(lat) and is_binary(lon) do
+    try do
+      [String.to_float(lat), String.to_float(lon)]
+    rescue
+      ArgumentError -> nil
+    end
+  end
+  defp to_point(%Offer{office_latitude: lat, office_longitude: lon}) when is_number(lat) and is_number(lon) do
+    [lat, lon]
   end
 
   def enrich_offer_with_continent_name(%Offer{continent: nil} = offer) do
@@ -165,5 +186,9 @@ defmodule JOE do
 
   defp store_offer_for_search(state, offer) do
     %{state | offers: [offer | state.offers]}
+  end
+
+  defp priv_file_path(file_name) do
+    Path.join(:code.priv_dir(:joe), file_name)
   end
 end

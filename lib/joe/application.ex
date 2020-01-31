@@ -26,4 +26,21 @@ defmodule JOE.Application do
     JOEWeb.Endpoint.config_change(changed, removed)
     :ok
   end
+
+  # Our state is not changing. Load here.
+  @state fn ->
+    state =
+      JOE.professions_file(Mix.env())
+      |> JOE.read_professions_file!()
+      |> Enum.reduce(nil, & JOE.receive(&2, &1))
+
+    state =
+      JOE.offers_file(Mix.env())
+      |> JOE.read_offers_file!()
+      |> Enum.reduce(state, & JOE.receive(&2, &1))
+
+    state
+  end.()
+
+  def get_state(), do: @state
 end

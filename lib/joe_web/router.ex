@@ -7,5 +7,7 @@ defmodule JOEWeb.Router do
 
   scope "/api", JOEWeb do
     pipe_through :api
+
+    get "/continents_stats", OffersController, :index
   end
 end
