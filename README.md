@@ -41,6 +41,8 @@ boundaries and after that check for radius in corners.
 
 Endpoint located here - http://localhost:4000/api/offers?lon=2.305791&lat=48.8661039&radius=50
 
+Run `mix phx.server` to start server, there no other external dependencies.
+
 # Taken time
 
 - 1 - Wondering about task
