@@ -38,3 +38,5 @@ I'll go for second path and use simple bruteforce approach because we
 have a such small dataset - check every offer if it in given radius.
 Alternative is to use some sorted structure to faster search for x, y
 boundaries and after that check for radius in corners.
+
+Endpoint located here - http://localhost:4000/api/offers?lon=2.305791&lat=48.8661039&radius=50
