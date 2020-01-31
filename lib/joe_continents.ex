@@ -21,7 +21,11 @@ defmodule JOE.Continents do
     end
   end
   def get_continent_name(lat, lon) when is_binary(lat) and is_binary(lon) do
-    get_continent_name(String.to_float(lat), String.to_float(lon))
+    try do
+      get_continent_name(String.to_float(lat), String.to_float(lon))
+    rescue
+      ArgumentError -> nil
+    end
   end
   def get_continent_name(nil, nil), do: nil
 end
