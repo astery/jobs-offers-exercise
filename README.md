@@ -40,3 +40,14 @@ Alternative is to use some sorted structure to faster search for x, y
 boundaries and after that check for radius in corners.
 
 Endpoint located here - http://localhost:4000/api/offers?lon=2.305791&lat=48.8661039&radius=50
+
+# Taken time
+
+- 1 - Wondering about task
+- 2 - Adding counter for continent statistic
+- 2 - Adding mix task for loading from files
+- 1 - Adding function to get continent names from points
+- 1 - Adding endpoint
+- 1 - Fix bugs, adding validation.
+
+8 hours in total

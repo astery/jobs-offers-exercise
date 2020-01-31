@@ -3,7 +3,6 @@ defmodule JOEWeb.OffersController do
 
   alias Ecto.Changeset
 
-  # TODO: validate params
   def index(conn, %{} = params) do
     types = %{lat: :float, lon: :float, radius: :float}
     changeset =
