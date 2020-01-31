@@ -47,7 +47,7 @@ defmodule Mix.Tasks.ShowContinentsStats do
       |> Enum.map(fn stat_item ->
         total = stat_item.total
         categories_counters = Enum.map(categories, & stat_item.categories[&1])
-        [stat_item.name | [total | categories_counters]]
+        [String.upcase(stat_item.name) | [total | categories_counters]]
       end)
 
     TableRex.quick_render!(rows, header)

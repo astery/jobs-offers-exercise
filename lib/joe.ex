@@ -46,8 +46,9 @@ defmodule JOE do
     }
   end
 
-  def receive(state, %Offer{profession_id: prof_id, continent: continent}) do
+  def receive(state, %Offer{profession_id: prof_id} = offer) do
     category_name = state.category_name_by_prof_id[prof_id]
+    %{continent: continent} = enrich_offer_with_continent_name(offer)
     increment_total_and_continent_category_count(state, continent, category_name)
   end
 
@@ -106,6 +107,11 @@ defmodule JOE do
 
   @doc "Return stat item name associated with total counter"
   def total_stat_name(), do: @total_stat_name
+
+  def enrich_offer_with_continent_name(%Offer{continent: nil} = offer) do
+    %{offer | continent: JOE.Continents.get_continent_name(offer.office_latitude, offer.office_longitude)}
+  end
+  def enrich_offer_with_continent_name(%Offer{} = offer), do: offer
 
   defp get_continent_stat(state, name) do
     Map.get(state.continents_stats, name, %ContinentStat{name: name})

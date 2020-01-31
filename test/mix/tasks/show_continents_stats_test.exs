@@ -15,11 +15,12 @@ defmodule Mix.Tasks.ShowContinentsStatsTest do
     Mix.Tasks.ShowContinentsStats.run(@default_args)
     assert_receive {:mix_shell, :info, [
     """
-    +-------+-------+----------+-------------------+
-    |       | TOTAL | Business | Marketing / Comm' |
-    +-------+-------+----------+-------------------+
-    | TOTAL | 2     | 1        | 1                 |
-    +-------+-------+----------+-------------------+
+    +--------+-------+----------+-------------------+
+    |        | TOTAL | Business | Marketing / Comm' |
+    +--------+-------+----------+-------------------+
+    | TOTAL  | 2     | 1        | 1                 |
+    | EUROPE | 2     | 1        | 1                 |
+    +--------+-------+----------+-------------------+
     """]}, 1000
   end
 end
