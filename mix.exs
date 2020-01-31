@@ -23,6 +23,9 @@ defmodule JOE.MixProject do
     [
       {:nimble_csv, "~> 0.6"},
       {:table_rex, "~> 2.0.0"},
+      {:geo, "~> 3.0"},
+      {:topo, "~> 0.4.0"},
+      {:jason, "~> 1.1"},
     ]
   end
 end
