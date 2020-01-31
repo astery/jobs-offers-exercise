@@ -1,6 +1,6 @@
 defmodule JOE do
   @moduledoc """
-  Jobs offers exercise
+  offers offers exercise
   """
 
   defmodule Offer do
@@ -70,6 +70,28 @@ defmodule JOE do
       end
 
     [total_stat | stats_list]
+  end
+
+  @doc """
+  Return stream of professions
+  """
+  def read_professions_file!(file) do
+    File.stream!(file)
+    |> NimbleCSV.RFC4180.parse_stream()
+    |> Stream.map(fn [id, name, category_name] ->
+      %Profession{id: id, name: name, category_name: category_name}
+    end)
+  end
+
+  @doc """
+  Return stream of offers
+  """
+  def read_offers_file!(file) do
+    File.stream!(file)
+    |> NimbleCSV.RFC4180.parse_stream()
+    |> Stream.map(fn [profession_id, contract_type, name, office_latitude, office_longitude] ->
+      %Offer{profession_id: profession_id, contract_type: contract_type, name: name, office_latitude: office_latitude, office_longitude: office_longitude}
+    end)
   end
 
   defp get_continent_stat(state, name) do
