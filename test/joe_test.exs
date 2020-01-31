@@ -35,6 +35,10 @@ defmodule JOETest do
         %{name: "ASIA", total: 0, categories: %{}},
       ] = JOE.continents_stats(state, continents: ["EUROPE", "ASIA"])
     end
+
+    test "&categories/1 should return a list", %{state: state} do
+      assert ["TECH"] = JOE.categories(state)
+    end
   end
 
   @professions_file Path.join([File.cwd!, "test/fixtures/professions.csv"])

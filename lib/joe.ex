@@ -94,6 +94,16 @@ defmodule JOE do
     end)
   end
 
+  @doc """
+  Return stream of offers
+  """
+  def categories(nil), do: []
+  def categories(%{category_name_by_prof_id: category_name_by_prof_id}) do
+    category_name_by_prof_id
+    |> Map.values()
+    |> Enum.dedup()
+  end
+
   defp get_continent_stat(state, name) do
     Map.get(state.continents_stats, name, %ContinentStat{name: name})
   end
