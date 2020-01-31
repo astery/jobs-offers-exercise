@@ -104,6 +104,9 @@ defmodule JOE do
     |> Enum.dedup()
   end
 
+  @doc "Return stat item name associated with total counter"
+  def total_stat_name(), do: @total_stat_name
+
   defp get_continent_stat(state, name) do
     Map.get(state.continents_stats, name, %ContinentStat{name: name})
   end

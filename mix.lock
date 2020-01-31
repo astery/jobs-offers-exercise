@@ -1,3 +1,4 @@
 %{
   "nimble_csv": {:hex, :nimble_csv, "0.6.0", "a3673f26d41f986774fe6060e309615343d3cb83a6d435754d8b1fdbd5764879", [:mix], [], "hexpm"},
+  "table_rex": {:hex, :table_rex, "2.0.0", "712783cbc2decb4d644d2ab8ad9315294f960c41b2cf0539308164922e352084", [:mix], [], "hexpm"},
 }
