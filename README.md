@@ -7,8 +7,8 @@ Exercise description located at `exercise_description.pdf`
 There is no need to read in sax-way for such small file but let's do 
 because we can.
 
-Run `mix show_continents_stats` and use `--slowdown` flag to see
-continents stats updates as loading proceeds.
+Run `mix show_continents_stats | less -S`. `less` is needed to get
+horizontal scrolling to comfortably view wide table.
 
 ## 02 / 03 . Question: Scaling
 
