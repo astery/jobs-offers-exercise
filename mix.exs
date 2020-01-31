@@ -25,6 +25,7 @@ defmodule JOE.MixProject do
       {:table_rex, "~> 2.0.0"},
       {:geo, "~> 3.0"},
       {:topo, "~> 0.4.0"},
+      {:geocalc, "~> 0.5"},
       {:jason, "~> 1.1"},
     ]
   end

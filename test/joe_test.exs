@@ -15,8 +15,8 @@ defmodule JOETest do
       state =
         nil
         |> JOE.receive(%Profession{id: 1, category_name: "TECH"})
-        |> JOE.receive(%Offer{profession_id: 1, continent: nil})
-        |> JOE.receive(%Offer{profession_id: 1, continent: "EUROPE"})
+        |> JOE.receive(%Offer{profession_id: 1, office_latitude: -12.0393, office_longitude: -14.3262})
+        |> JOE.receive(%Offer{profession_id: 1, office_latitude: 48.885247, office_longitude: 2.3566441, continent: "EUROPE"})
 
       %{state: state}
     end
@@ -38,6 +38,14 @@ defmodule JOETest do
 
     test "&categories/1 should return a list", %{state: state} do
       assert ["TECH"] = JOE.categories(state)
+    end
+
+    test "&offers_in_radius/1 should return a list of offers in radius and calc distance", %{state: state} do
+      assert [%{
+        office_latitude: 48.885247,
+        office_longitude: 2.3566441,
+        distance: 1.6411344414832527
+      }] = JOE.offers_in_radius(state, {48.9, 2.356}, 50)
     end
   end
 

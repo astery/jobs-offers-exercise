@@ -10,7 +10,8 @@ defmodule JOE do
       :name,
       :office_latitude,
       :office_longitude,
-      :continent,
+      :continent, # calculable
+      :distance,  # calculable
     ]
   end
 
@@ -27,7 +28,7 @@ defmodule JOE do
   end
 
   defmodule State do
-    defstruct [category_name_by_prof_id: %{}, continents_stats: %{}]
+    defstruct [category_name_by_prof_id: %{}, continents_stats: %{}, offers: []]
   end
 
   @total_stat_name "TOTAL"
@@ -50,6 +51,7 @@ defmodule JOE do
     category_name = state.category_name_by_prof_id[prof_id]
     %{continent: continent} = enrich_offer_with_continent_name(offer)
     increment_total_and_continent_category_count(state, continent, category_name)
+    |> store_offer_for_search(offer)
   end
 
   @doc """
@@ -108,6 +110,25 @@ defmodule JOE do
   @doc "Return stat item name associated with total counter"
   def total_stat_name(), do: @total_stat_name
 
+  @doc """
+  List offers in given radius in kilometers
+  """
+  def offers_in_radius(%{offers: offers}, {lat, lon}, radius_in_km) do
+    center = [lat, lon]
+    radius_in_meters = radius_in_km * 1_000
+
+    Enum.flat_map(offers, fn offer ->
+       point = [offer.office_latitude, offer.office_longitude]
+       distance = Geocalc.Calculator.distance_between(center, point)
+       distance_in_km = distance / 1_000
+       cond do
+         distance <= radius_in_meters -> [%{offer | distance: distance_in_km}]
+         true -> []
+       end
+    end)
+    |> List.flatten()
+  end
+
   def enrich_offer_with_continent_name(%Offer{continent: nil} = offer) do
     %{offer | continent: JOE.Continents.get_continent_name(offer.office_latitude, offer.office_longitude)}
   end
@@ -140,5 +161,9 @@ defmodule JOE do
       total: stat.total + 1,
       categories: Map.put(stat.categories, category_name, category_count + 1)
     })
+  end
+
+  defp store_offer_for_search(state, offer) do
+    %{state | offers: [offer | state.offers]}
   end
 end
